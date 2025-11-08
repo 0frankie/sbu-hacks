@@ -19,7 +19,7 @@ videoMetadata: any
       <video ref={videoElementRef} className='w-full md:w-4/5' controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
       <p>dynamic segment with</p>
       {perfectPathCoords.map((coordinateRect: Array<number>) => (
-        drawPoint(coordinateRect, videoElementRef.current.getBoundingClientRect())
+        videoElementRef ? drawPoint(coordinateRect, videoElementRef.current.getBoundingClientRect()) : null
       ))}
     </div>
   )
