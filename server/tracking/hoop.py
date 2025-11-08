@@ -9,7 +9,7 @@ CLIENT = InferenceHTTPClient(
 
 
 def detect_hoop(frame, point, size=200):
-    frame = frame[point[1]-size//2:point[1]+size//2, point[0]-size//2:point[0]+size//2]
+    frame = frame[max(0, point[1]-size//2):min(point[1]+size//2, frame.shape[0]), max(0, point[0]-size//2):min(point[0]+size//2, frame.shape[1])]
     _, buffer = cv2.imencode('.jpg', frame)
     img_bytes = base64.b64encode(buffer).decode('utf-8')
 
