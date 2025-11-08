@@ -1,11 +1,12 @@
 [project]
-name = "server"
+name = "tracking"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "django>=5.2.8",
+    "inference[gaze,grounding-dino,sam,yolo-world]>=0.60.0",
     "numpy>=2.2.6",
-    "opencv-contrib-python>=4.12.0.88",
+    "opencv-contrib-python>=4.10.0.84",
 ]
