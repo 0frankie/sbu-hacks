@@ -29,6 +29,7 @@ def track(request):
         hoop_x = int(request.POST.get("hoop_x", 0))
         hoop_y = int(request.POST.get("hoop_y", 0))
         start_frame = int(request.POST.get("start_frame", 0))
+        end_frame = int(request.POST.get("end_frame", 0))
 
         with Tracker(path, tracker_type) as tracker:
             frame = tracker.get_frame()
@@ -78,6 +79,7 @@ def track(request):
             analyzed_shot = AnalyzedShot(
                 video=filename,
                 start_frame=start_frame,
+                end_frame=end_frame,
                 ball_bboxes=boxes,
                 hoop_bbox=hoop_bbox,
                 actual_angle=actual_angle,
