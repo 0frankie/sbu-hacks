@@ -1,10 +1,8 @@
-'use client'
+
 // import { useState, useRef } from 'react'
 
 function drawPoint(coordinateRect) {
-  if (coordinateRect) {
-    console.log(coordinateRect)
-  }
+  
 }
 
 export default async function VideoPage({
@@ -19,6 +17,8 @@ export default async function VideoPage({
   const videoMetadata = await response.json()
   const perfectPathCoords = videoMetadata.ball_bboxes
   // const videoElementRef = useRef(null);
+  console.log(videoMetadata);
+  console.log(perfectPathCoords);
   return (
     <div>
       <video className='w-full md:w-4/5' controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
