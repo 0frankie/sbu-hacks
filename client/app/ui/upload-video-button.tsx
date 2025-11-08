@@ -63,7 +63,7 @@ export default function UploadFileButton() {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="w-full">
-                           <VideoDisplay></VideoDisplay>
+                             <VideoDisplay videoFile={currentFile} set_ball_x={set_ball_x} set_ball_y = {set_ball_y} set_hoop_x={set_hoop_x} set_hoop_y={set_hoop_y}></VideoDisplay>
                         </div>
                         <DialogFooter>
                             <Button variant="outline">Reset</Button>

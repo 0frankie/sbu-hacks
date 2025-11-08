@@ -1,6 +1,6 @@
 'use client'
 import { RefObject, useEffect, useRef, useState } from "react"
-export default function VideoDisplay({video, set_ball_x, set_ball_y, set_hoop_x, set_hoop_y}:{vid:File, set_ball_x: Function, set_ball_y: Function, set_hoop_x:Function, set_hoop_y:Function}){
+export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoop_x, set_hoop_y}:{videoFile:File, set_ball_x: Function, set_ball_y: Function, set_hoop_x:Function, set_hoop_y:Function}){
     const canva = useRef<HTMLCanvasElement>(null);
     let vid = useRef(null);
     let [vidTime, setVidTime] = useState("");
@@ -22,22 +22,21 @@ export default function VideoDisplay({video, set_ball_x, set_ball_y, set_hoop_x,
             //check hoop left
             //check hoop right
             //check time 
-            switch(count){
+             switch(count){
                 case 0:
                     set_ball_x(canvasX);
-                    console.log("ball x: " + canvasX);
-                    break;
-                case 1:
                     set_ball_y(canvasY);
                     console.log("ball_y" + canvasY);
+                    console.log("ball_x" + canvasX);
                     break;
-                case 2:
+                case 1:
                     set_hoop_x(canvasX);
-                    break;
-                case 3:
                     set_hoop_y(canvasY);
+                    console.log("hoop_y" + canvasY);
+                    console.log("hoop_x" + canvasX);
                     break;
             }
+
 
             context.fillStyle = "red";
             context.fillRect(e.clientX - canva.current.offsetLeft, e.clientY - canva.current.getBoundingClientRect().top, 25, 25)
