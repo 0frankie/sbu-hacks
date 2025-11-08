@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+import cv2
 from django.views.decorators.csrf import csrf_exempt
 from tracking.tracker import Tracker
 from tracking.hoop import detect_hoop
@@ -29,6 +30,7 @@ def track(request):
         hoop_x = int(request.POST.get("hoop_x", 0))
         hoop_y = int(request.POST.get("hoop_y", 0))
         start_frame = int(request.POST.get("start_frame", 0))
+        end_frame = int(request.POST.get("end_frame", 0))
 
         with Tracker(path, tracker_type) as tracker:
             frame = tracker.get_frame()
@@ -46,8 +48,10 @@ def track(request):
 
             tracker.init(frame, bbox)
 
-            boxes = []
-            while True:
+            tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
+            boxes = [(0, 0, 0, 0)] * start_frame
+            i = 0
+            while i < end_frame:
                 try:
                     success, frame, box = tracker.update()
                     if not success:
@@ -55,6 +59,7 @@ def track(request):
                     boxes.append(box)
                 except Exception:
                     break
+                i += 1
 
             points = list(map(lambda b: (b[0] + b[2] // 2, b[1] + b[3] // 2), boxes))
             actual_angle = tracking.math.calc_actual_angle(points[start_frame:])
@@ -78,6 +83,7 @@ def track(request):
             analyzed_shot = AnalyzedShot(
                 video=filename,
                 start_frame=start_frame,
+                end_frame=end_frame,
                 ball_bboxes=boxes,
                 hoop_bbox=hoop_bbox,
                 actual_angle=actual_angle,
@@ -107,3 +113,25 @@ def get(request, id):
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
 
+def delete(request, id):
+    try:
+        shot = AnalyzedShot.objects.get(id=id)
+        shot.delete()
+        return HttpResponse("Shot deleted", status=200)
+    except AnalyzedShot.DoesNotExist:
+        return HttpResponse("Shot not found", status=404)
+
+def thumbnail(request, id):
+    try:
+        shot = AnalyzedShot.objects.get(id=id)
+        fs = FileSystemStorage()
+        path = os.path.join(fs.location, shot.video)
+        cap = cv2.VideoCapture(path)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, shot.start_frame - 1)
+        ret, frame = cap.read()
+        if not ret:
+            return HttpResponse("Could not read frame", status=500)
+        _, buffer = cv2.imencode('.jpg', frame)
+        return HttpResponse(buffer.tobytes(), content_type="image/jpeg")
+    except AnalyzedShot.DoesNotExist:
+        return HttpResponse("Shot not found", status=404)

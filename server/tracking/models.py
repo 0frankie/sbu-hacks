@@ -4,6 +4,7 @@ from django.db import models
 class AnalyzedShot(models.Model):
     video = models.CharField(max_length=255)
     start_frame = models.IntegerField()
+    end_frame = models.IntegerField(default=0)
     ball_bboxes = models.JSONField()
     hoop_bbox = models.JSONField()
     actual_angle = models.FloatField()
