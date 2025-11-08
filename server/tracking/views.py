@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+import cv2
 from django.views.decorators.csrf import csrf_exempt
 from tracking.tracker import Tracker
 from tracking.hoop import detect_hoop
@@ -47,7 +48,8 @@ def track(request):
 
             tracker.init(frame, bbox)
 
-            boxes = []
+            tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
+            boxes = [(0, 0, 0, 0)] * start_frame
             i = 0
             while i < end_frame:
                 try:
