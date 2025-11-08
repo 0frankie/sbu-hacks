@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root[data-theme="light"] {
+  --background: #f3f7ff;
+  --text: #010922;
+  --primary: #215cf7;
+  --on-primary: #f3f7ff;
+  --secondary: #b574fa;
+  --accent: #c741f8;
+
+  --background-50: #e6eaf2;
+  --background-100: #dadde5;
+
+  --hover: #dadde5;
+}
+
+:root[data-theme="dark"] {
+  --background: #00030a;
+  --text: #dce5fe;
+  --primary: #0845dd;
+  --on-primary: #dce5fe;
+  --secondary: #45058a;
+  --accent: #8f07c0;
+
+  --background-50: #171819;
+  --background-100: #252628;
+
+  --hover: #252628;
+}
+
+
+@theme inline {
+  --color-background: var(--background);
+  --color-text: var(--text);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-background-50: var(--background-50);
+  --color-background-100: var(--background-100);
+  --color-hover: var(--hover);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer components {
+  .button-transition {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(--default-transition-timing-function); /* cubic-bezier(0.4, 0, 0.2, 1) */
+    transition-duration: var(--default-transition-duration); /* 150ms */
+    transition-duration: 150ms;
+    transition-timing-function: var(--ease-in-out);
+  }
+  .button-transition:hover {
+    background: var(--hover);
+  }
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #00030a;
+    --foreground: #dce5fe;
+    --primary: #0845dd;
+    --secondary: #45058a;
+    --accent: #8f07c0;
+  }
+} */
+
+/* body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+} */
