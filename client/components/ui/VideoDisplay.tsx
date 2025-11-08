@@ -11,10 +11,11 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
         setVidTime(`${event.target.currentTime}`);
     }
     
-    function getPosition(e:any){
+    function getPosition(e:MouseEvent){
         if(canva.current){
+            console.log(canva.current.offsetLeft);
             const context = canva.current.getContext("2d");
-            const canvasX = e.clientX - canva.current.offsetLeft;
+            const canvasX = e.clientX - canva.current.getBoundingClientRect().left;
             const canvasY = e.clientY - canva.current.getBoundingClientRect().top;
             //only allow ability to fill color when all 4 var go from null to something
             //check b-ball left
@@ -22,7 +23,8 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
             //check hoop left
             //check hoop right
             //check time 
-             switch(count){
+            if(count < 2){
+                switch(count){
                 case 0:
                     set_ball_x(canvasX);
                     set_ball_y(canvasY);
@@ -35,12 +37,13 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
                     console.log("hoop_y" + canvasY);
                     console.log("hoop_x" + canvasX);
                     break;
+                }
+                
+                context.fillStyle = "red";
+                context.fillRect(canvasX, canvasY, 5, 5)
+                setCount( count + 1);
             }
-
-
-            context.fillStyle = "red";
-            context.fillRect(e.clientX - canva.current.offsetLeft, e.clientY - canva.current.getBoundingClientRect().top, 25, 25)
-            setCount( count + 1);
+             
         }
     }
     
