@@ -7,4 +7,5 @@ urlpatterns = [
     path("track", views.track),
     path("all", views.all),
     path("get/<int:id>", views.get),
+    path("delete/<int:id>", views.delete),
 ]

@@ -107,3 +107,10 @@ def get(request, id):
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
 
+def delete(request, id):
+    try:
+        shot = AnalyzedShot.objects.get(id=id)
+        shot.delete()
+        return HttpResponse("Shot deleted", status=200)
+    except AnalyzedShot.DoesNotExist:
+        return HttpResponse("Shot not found", status=404)
