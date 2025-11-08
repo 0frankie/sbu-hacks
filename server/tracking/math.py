@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 """
 
 
+# optimal angle calculation derived here: https://livingstones.thetreeoflife.us/ShootingAngle.pdf
 def calc_optimal_angle(p_x: int, p_y: int, h_x: int, h_y: int) -> float:
     return math.pi / 4 + math.atan((p_y - h_y) / abs((h_x - p_x)))
 
@@ -15,6 +16,8 @@ def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: 
     g = 9.81 * px_per_meter  # m/s^2
     optimal_angle = calc_optimal_angle(p_x, p_y, h_x, h_y)
 
+    # derived from kinematics with known optimal angle & no air resistance
+    # v = sqrt(x^2g/(2cos^2\theta(y-xtan\theta)))
     numerator = -((h_x - p_x) ** 2) * g
     denominator = (
         2
@@ -28,6 +31,7 @@ def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: 
         -v * math.sin(optimal_angle),
     )
 
+
 def calc_actual_angle(points: list[tuple[int, int]]) -> float:
     x0, y0 = points[0]
     x1, y1 = points[1]
@@ -36,7 +40,6 @@ def calc_actual_angle(points: list[tuple[int, int]]) -> float:
 
 def calc_actual_velocity(points: list[tuple[int, int]], dt: float, px_per_meter: float) -> tuple[float, float]:
     g = 9.81 * px_per_meter  # m/s^2
-
     num_points = 10
     vx = 0
     vy = 0
@@ -52,9 +55,23 @@ def calc_actual_velocity(points: list[tuple[int, int]], dt: float, px_per_meter:
     return (vx, vy)
 
 
+def calc_diff(a, b) -> float:
+    return abs(a - b) / ((a + b) / 2.0)
+
+
 """
     Given the shot distance, find the area under the curve
 """
+
+
+def angle_diff(p_x: int, p_y: int, h_x: int, h_y: int, angle: float) -> float:
+    return calc_diff(calc_optimal_angle(p_x, p_y, h_x, h_y), angle)
+
+
+def speed_diff(
+    p_x: int, p_y: int, h_x: int, h_y: int, velocity: tuple[float, float]
+) -> float:
+    return calc_diff(calc_optimal_velocity(p_x, p_y, h_x, h_y), velocity)
 
 
 # this currently draws a close approximation, but not the exact curve
