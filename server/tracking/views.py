@@ -48,7 +48,8 @@ def track(request):
             tracker.init(frame, bbox)
 
             boxes = []
-            while True:
+            i = 0
+            while i < end_frame:
                 try:
                     success, frame, box = tracker.update()
                     if not success:
@@ -56,6 +57,7 @@ def track(request):
                     boxes.append(box)
                 except Exception:
                     break
+                i += 1
 
             points = list(map(lambda b: (b[0] + b[2] // 2, b[1] + b[3] // 2), boxes))
             actual_angle = tracking.math.calc_actual_angle(points[start_frame:])
