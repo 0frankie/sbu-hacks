@@ -1,5 +1,7 @@
 import VideoBody from "./general"
 
+// import { useState, useRef } from 'react'
+
 export default async function VideoPage({
   params,
 }: {
