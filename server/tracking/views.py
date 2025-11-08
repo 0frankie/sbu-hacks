@@ -3,8 +3,11 @@ from django.views.decorators.csrf import csrf_exempt
 from tracking.tracker import Tracker
 from tracking.hoop import detect_hoop
 import tracking.math
+from django.forms.models import model_to_dict
 from django.core.files.storage import FileSystemStorage
+from tracking.models import AnalyzedShot
 import os
+import math
 
 
 def index(request):
@@ -72,17 +75,35 @@ def track(request):
                 px_per_meter,
             )
 
-            return JsonResponse(
-                {
-                    "ball_bboxes": boxes,
-                    "hoop_bbox": hoop_bbox,
-                    "actual_angle": actual_angle,
-                    "actual_velocity": actual_vel,
-                    "optimal_angle": optimal_angle,
-                    "optimal_velocity": optimal_vel,
-                    "px_per_meter": px_per_meter,
-                    "start_pos_x": points[start_frame][0],
-                    "start_pos_y": points[start_frame][1],
-                }
+            analyzed_shot = AnalyzedShot(
+                video=filename,
+                start_frame=start_frame,
+                ball_bboxes=boxes,
+                hoop_bbox=hoop_bbox,
+                actual_angle=actual_angle,
+                actual_velocity=math.sqrt(actual_vel[0] ** 2 + actual_vel[1] ** 2),
+                optimal_angle=optimal_angle,
+                optimal_velocity=math.sqrt(optimal_vel[0] ** 2 + optimal_vel[1] ** 2),
+                px_per_meter=px_per_meter,
+                start_pos_x=points[start_frame][0],
+                start_pos_y=points[start_frame][1],
             )
+
+            analyzed_shot.save()
+
+            return JsonResponse(model_to_dict(analyzed_shot))
+    
     return HttpResponse("Invalid request method", status=405)
+
+def all(request):
+    shots = AnalyzedShot.objects.all()
+    shots_list = [model_to_dict(shot) for shot in shots]
+    return JsonResponse(shots_list, safe=False)
+
+def get(request, id):
+    try:
+        shot = AnalyzedShot.objects.get(id=id)
+        return JsonResponse(model_to_dict(shot))
+    except AnalyzedShot.DoesNotExist:
+        return HttpResponse("Shot not found", status=404)
+
