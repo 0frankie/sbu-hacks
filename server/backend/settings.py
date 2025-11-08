@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tracking',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Source - https://stackoverflow.com/q
+
+# Posted by Dan, modified by community. See post 'Timeline' for change history
+
+# Retrieved 2025-11-08, License - CC BY-SA 2.5
+
+
+
+MEDIA_ROOT = 'media/'
