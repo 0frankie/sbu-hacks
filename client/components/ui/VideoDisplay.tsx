@@ -64,15 +64,10 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
     },[vidTime])
 
     return(
-        <>
-            
+            <div className="absolute">
             <video width = "320" height = "220" controls src="/medias/test_ibblGVd.mp4" ref= {vid} onTimeUpdate={(e)=>{changeFrame(e as any)}} ></video>
             <canvas width= {300} height = {220} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
-            
-            
-            
-        </>
-        
+            </div>
     )
     
     
