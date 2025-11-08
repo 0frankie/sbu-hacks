@@ -133,7 +133,9 @@ class Tracker:
         if chosen is None:
             return None, 0, mask
 
+
         x, y, w, h = cv2.boundingRect(chosen)
+        added_padding = w // 10
         return (
             x - added_padding,
             y - added_padding,

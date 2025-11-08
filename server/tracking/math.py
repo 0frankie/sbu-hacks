@@ -40,16 +40,19 @@ def calc_actual_angle(points: list[tuple[int, int]]) -> float:
 
 def calc_actual_velocity(points: list[tuple[int, int]], dt: float, px_per_meter: float) -> tuple[float, float]:
     g = 9.81 * px_per_meter  # m/s^2
-    num_points = 10
+    num_points = math.floor(len(points) * 0.9)
     vx = 0
     vy = 0
     time = dt
     for i in range(num_points):
-        x0, y0 = points[0]
-        x1, y1 = points[i + 1]
-        vx += (x1 - x0) / time
+        y0 = points[0][1]
+        y1 = points[i + 1][1]
         vy += (y1 - y0 - 0.5 * g * time * time) / time
         time += dt
+    for i in range(math.floor(len(points) * 0.1), num_points):
+        xi = points[i][0]
+        x1 = points[i + 1][0]
+        vx += (x1 - xi) / dt
     vx /= num_points
     vy /= num_points
     return (vx, vy)
