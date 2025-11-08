@@ -9,10 +9,13 @@ export default async function Home() {
   // if the user has some videos
   if (allVideos) {
     return (
-      <div className="grid grid-rows-3 grid-cols-3 gap-4">
+      <div className="grid grid-rows-2 grid-cols-2 gap-4 p-4">
         {allVideos.map((video) => (
-          <Link className="flex items-center flex-row gap-2" href={`/video/${video.id}`}>
+          <Link key={`${video.id}`} className="flex flex-col rounded" href={`/video/${video.id}`}>
             <img src={`http://localhost:8000/media/${video.thumbnail}`} alt="" />
+            <div className="bg-background-50">
+              <p>{video.video}</p>
+            </div>
           </Link>
         ))}
       </div>
