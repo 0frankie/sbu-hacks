@@ -120,3 +120,18 @@ def delete(request, id):
         return HttpResponse("Shot deleted", status=200)
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
+
+def thumbnail(request, id):
+    try:
+        shot = AnalyzedShot.objects.get(id=id)
+        fs = FileSystemStorage()
+        path = os.path.join(fs.location, shot.video)
+        cap = cv2.VideoCapture(path)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, shot.start_frame - 1)
+        ret, frame = cap.read()
+        if not ret:
+            return HttpResponse("Could not read frame", status=500)
+        _, buffer = cv2.imencode('.jpg', frame)
+        return HttpResponse(buffer.tobytes(), content_type="image/jpeg")
+    except AnalyzedShot.DoesNotExist:
+        return HttpResponse("Shot not found", status=404)
