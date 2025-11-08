@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 """
 
 
+# optimal angle calculation derived here: https://livingstones.thetreeoflife.us/ShootingAngle.pdf
 def calc_optimal_angle(p_x: int, p_y: int, h_x: int, h_y: int) -> float:
     return math.pi / 4 + math.atan((h_y - p_y) / abs((h_x - p_x)))
 
@@ -49,9 +50,23 @@ def calc_actual_velocity(
     return ((x1 - x0) / time, (y1 - y0) / time)
 
 
+def calc_diff(a, b) -> float:
+    return abs(a - b) / ((a + b) / 2.0)
+
+
 """
     Given the shot distance, find the area under the curve
 """
+
+
+def angle_diff(p_x: int, p_y: int, h_x: int, h_y: int, angle: float) -> float:
+    return calc_diff(calc_optimal_angle(p_x, p_y, h_x, h_y), angle)
+
+
+def speed_diff(
+    p_x: int, p_y: int, h_x: int, h_y: int, velocity: tuple[float, float]
+) -> float:
+    return calc_diff(calc_optimal_velocity(p_x, p_y, h_x, h_y), velocity)
 
 
 # this currently draws a close approximation, but not the exact curve
