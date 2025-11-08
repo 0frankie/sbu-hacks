@@ -36,11 +36,12 @@ export default function UploadFileButton() {
         formData.append('ball_y', JSON.stringify(ballPosition.y));
         formData.append('hoop_x', JSON.stringify(hoopPosition.x));
         formData.append('hoop_y', JSON.stringify(hoopPosition.y));
+        formData.append('start_frame', JSON.stringify(45));
+        formData.append('end_frame', JSON.stringify(100));
         // formData.append('ball_x', JSON.stringify(1315));
         // formData.append('ball_y', JSON.stringify(633));
         // formData.append('hoop_x', JSON.stringify(396));
         // formData.append('hoop_y', JSON.stringify(207));
-        formData.append('start_frame', JSON.stringify(45));
         let response = await fetch('http://localhost:8000/api/track', {
             method: "POST",
             body: formData
