@@ -30,10 +30,13 @@ def track(request):
         ball_y = int(request.POST.get("ball_y", 0))
         hoop_x = int(request.POST.get("hoop_x", 0))
         hoop_y = int(request.POST.get("hoop_y", 0))
-        start_frame = int(request.POST.get("start_frame", 0))
-        end_frame = int(request.POST.get("end_frame", 0))
+        start_time = float(request.POST.get("start_time", 0))
+        end_time = float(request.POST.get("end_time", 0))
 
         with Tracker(path, tracker_type) as tracker:
+            fps = tracker.get_fps()
+            start_frame = int(fps * start_time)
+            end_frame = int(fps * end_time)
             tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
             frame = tracker.get_frame()
             _, buffer = cv2.imencode('.jpg', frame)

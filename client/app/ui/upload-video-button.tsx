@@ -22,7 +22,9 @@ export default function UploadFileButton() {
     const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
     const [hoopPosition, setHoopPosition] = useState({ x: 0, y: 0 });
     const [selecting, setSelecting] = useState("");
-    const videoElementRef = useRef(null);
+    const [start_time, set_start_time] = useState(0);
+    const [end_time, set_end_time] = useState(0);
+    const videoElementRef = useRef<HTMLVideoElement>(null);
 
     function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
         // event.target.files will have type FileList[File]
@@ -36,8 +38,8 @@ export default function UploadFileButton() {
         formData.append('ball_y', JSON.stringify(ballPosition.y));
         formData.append('hoop_x', JSON.stringify(hoopPosition.x));
         formData.append('hoop_y', JSON.stringify(hoopPosition.y));
-        formData.append('start_frame', JSON.stringify(45));
-        formData.append('end_frame', JSON.stringify(100));
+        formData.append('start_time', JSON.stringify(start_time));
+        formData.append('end_time', JSON.stringify(end_time));
         // formData.append('ball_x', JSON.stringify(1315));
         // formData.append('ball_y', JSON.stringify(633));
         // formData.append('hoop_x', JSON.stringify(396));
@@ -64,6 +66,18 @@ export default function UploadFileButton() {
         else {
         }
     }
+    
+    function changeStartTime(){
+            set_start_time(videoElementRef.current.currentTime);
+            console.log(videoElementRef.current.currentTime);
+        
+    }
+    function changeEndTime(){
+        
+            set_end_time(videoElementRef.current.currentTime);
+            console.log(videoElementRef.current.currentTime);
+        
+    }
 
     return (
         <>
@@ -89,7 +103,7 @@ export default function UploadFileButton() {
                         </DialogHeader>
                         <div className="w-full">
                             <div className="h-[260px] relative">
-                                <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none">
+                                <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none" >
                                     <source src={URL.createObjectURL(currentFile)} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
@@ -109,6 +123,18 @@ export default function UploadFileButton() {
                                 <div className="flex flex-row gap-4">
                                     <p>X: {hoopPosition.x}</p>
                                     <p>Y: {hoopPosition.y}</p>
+                                </div>
+                            </div>
+                             <div className="flex flex-row items-center justify-between">
+                                <Button variant="outline" onClick={changeStartTime}>Set Start Time</Button>
+                                <div className="flex flex-row gap-4">
+                                    <p>Time: {start_time}</p>
+                                </div>
+                            </div>
+                             <div className="flex flex-row items-center justify-between">
+                                <Button variant="outline" onClick={changeEndTime}>Set End Time</Button>
+                                <div className="flex flex-row gap-4">
+                                    <p>Time: {end_time}</p>
                                 </div>
                             </div>
                         </div>
