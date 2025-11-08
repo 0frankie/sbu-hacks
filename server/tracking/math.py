@@ -1,6 +1,7 @@
 import math
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 """
     Gets the optimal angle in radians
@@ -9,10 +10,12 @@ import matplotlib.pyplot as plt
 
 # optimal angle calculation derived here: https://livingstones.thetreeoflife.us/ShootingAngle.pdf
 def calc_optimal_angle(p_x: int, p_y: int, h_x: int, h_y: int) -> float:
-    return math.pi / 4 + math.atan((p_y - h_y) / abs((h_x - p_x)))
+    return math.pi / 4 + math.atan2(abs(p_y - h_y), abs((h_x - p_x)))
 
 
-def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: float) -> tuple[float, float]:
+def calc_optimal_velocity(
+    p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: float
+) -> tuple[float, float]:
     g = 9.81 * px_per_meter  # m/s^2
     optimal_angle = calc_optimal_angle(p_x, p_y, h_x, h_y)
 
@@ -22,7 +25,7 @@ def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: 
     denominator = (
         2
         * (math.cos(optimal_angle) ** 2)
-        * ((p_y - h_y) - math.tan(optimal_angle) * abs(h_x - p_x))
+        * (abs(p_y - h_y) - math.tan(optimal_angle) * abs(h_x - p_x))
     )
 
     v = math.sqrt(numerator / denominator)
@@ -38,7 +41,10 @@ def calc_actual_angle(points: list[tuple[int, int]]) -> float:
 
     return math.atan2(y1 - y0, x1 - x0)
 
-def calc_actual_velocity(points: list[tuple[int, int]], dt: float, px_per_meter: float) -> tuple[float, float]:
+
+def calc_actual_velocity(
+    points: list[tuple[int, int]], dt: float, px_per_meter: float
+) -> tuple[float, float]:
     g = 9.81 * px_per_meter  # m/s^2
     num_points = math.floor(len(points) * 0.9)
     vx = 0
