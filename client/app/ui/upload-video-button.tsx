@@ -10,8 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import VideoDisplay from "@/components/ui/VideoDisplay"
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Video from "../Video/page"
 
 export default function UploadFileButton() {
@@ -19,10 +18,11 @@ export default function UploadFileButton() {
         type: "video/*",
     });
     const [currentFile, setFile] = useState(dummyFile);
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
     const [hoopPosition, setHoopPosition] = useState({ x: 0, y: 0 });
     const [selecting, setSelecting] = useState("");
+    const videoElementRef = useRef(null);
 
     function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
         // event.target.files will have type FileList[File]
@@ -34,27 +34,30 @@ export default function UploadFileButton() {
         formData.append('video', currentFile);
         formData.append('ball_x', JSON.stringify(ballPosition.x));
         formData.append('ball_y', JSON.stringify(ballPosition.y));
+        formData.append('hoop_x', JSON.stringify(hoopPosition.x));
+        formData.append('hoop_y', JSON.stringify(hoopPosition.y));
+        // formData.append('ball_x', JSON.stringify(1315));
+        // formData.append('ball_y', JSON.stringify(633));
+        // formData.append('hoop_x', JSON.stringify(396));
+        // formData.append('hoop_y', JSON.stringify(207));
+        formData.append('start_frame', JSON.stringify(45));
         let response = await fetch('http://localhost:8000/api/track', {
             method: "POST",
             body: formData
         })
-        // console.log(response);
-        // const rawFormData = {
-        //     customerId: formData.get('customerId'),
-        //     amount: formData.get('amount'),
-        //     status: formData.get('status'),
-        // }
-        // mutate data
-        // revalidate the cache
     }
 
     function handleClick(event) {
+        const posData = {
+            x: Math.floor((event.clientX - videoElementRef.current.getBoundingClientRect().x) * 1920 / 462),
+            y: Math.floor((event.clientY - videoElementRef.current.getBoundingClientRect().y) * 1080 / 260),
+        }
         if (selecting === "ball") {
-            setBallPosition({ x: event.clientX, y: event.clientY })
+            setBallPosition(posData)
             setSelecting("")
         }
         else if (selecting === "hoop") {
-            setHoopPosition({ x: event.clientX, y: event.clientY })
+            setHoopPosition(posData)
             setSelecting("")
         }
         else {
@@ -75,10 +78,7 @@ export default function UploadFileButton() {
                 </div>
             </label>
             <Dialog open={open} onOpenChange={setOpen}>
-                {/* <form className="w-screen h-fit" action={submitFile}> */}
-                {/* <form className="w-screen h-fit" action="http://localhost:8000/api/track" method="POST"> */}
                 <div className="w-screen h-fit">
-
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Video Processing</DialogTitle>
@@ -87,14 +87,15 @@ export default function UploadFileButton() {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="w-full">
-
-                            <div className="h-[200px] relative">
-                                <video className="h-[200px] absolute" controls preload="none">
+                            <div className="h-[260px] relative">
+                                <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none">
                                     <source src={URL.createObjectURL(currentFile)} type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
-                                <canvas className={`h-[200px] absolute bg-amber-300 opacity-10 ${(selecting === 'ball' || selecting === 'hoop') ? "" : "hidden"}`} onClick={handleClick}></canvas>
+                                <canvas className={`w-[462px] h-[260px] absolute bg-amber-300 opacity-10 ${(selecting === 'ball' || selecting === 'hoop') ? "" : "hidden"}`} onClick={handleClick}></canvas>
                             </div>
+                            {/* <button onClick={() => {console.log(videoElementRef.current.videoWidth)}}>how big am i</button>
+                            <button onClick={() => {console.log(videoElementRef.current.getBoundingClientRect())}}>where am i </button> */}
                             <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={() => { setSelecting('ball') }}>Select ball position</Button>
                                 <div className="flex flex-row gap-4">
@@ -122,7 +123,6 @@ export default function UploadFileButton() {
                     </DialogContent>
 
                 </div>
-                {/* </form> */}
             </Dialog>
         </>
     )

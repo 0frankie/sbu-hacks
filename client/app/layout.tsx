@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import LeftSidebar from "@/app/ui/left-sidebar";
-import Header from "@/app/ui/header";
+import LeftSidebar from "@/components/ui/left-sidebar";
+import Header from "@/components/ui/header";
 import { cookies } from "next/headers";
 
 import { Geist, Geist_Mono } from "next/font/google";
