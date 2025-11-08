@@ -5,12 +5,22 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
     let vid = useRef(null);
     let [vidTime, setVidTime] = useState("");
     const [count, setCount] = useState(0);
-    
+    const frameRate = 1/30;
     function changeFrame(event:any){
         console.log("vidTime");
         setVidTime(`${event.target.currentTime}`);
     }
-    
+    function nextFrame(){
+        if(vid){
+            vid.current.currentTime += frameRate;
+             
+        }
+    }
+    function prevFrame(){
+        if(vid){
+            vid.current.currentTime -= frameRate;
+        }
+    }
     function getPosition(e:MouseEvent){
         if(canva.current){
             console.log(canva.current.offsetLeft);
@@ -55,9 +65,6 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
                     context.fillRect(0,0,320,210);
                     context.drawImage(vid.current, 0, 0, canva.current.width, canva.current.height);
 
-               
-                
-            
             }
             
 
@@ -67,12 +74,12 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
     },[vidTime])
 
     return(
-        <>
-            
+            <div className="absolute">
             <video width = "320" height = "220" controls src="/medias/test_ibblGVd.mp4" ref= {vid} onTimeUpdate={(e)=>{changeFrame(e as any)}} ></video>
             <canvas width= {300} height = {220} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
-        </>
-        
+            <button onClick={nextFrame}>next</button>
+            <button onClick={prevFrame}>before</button>
+            </div>
     )
     
     
