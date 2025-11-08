@@ -48,11 +48,9 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
         if (canva.current) {
                 if(vid){
                     const context = canva.current.getContext("2d");
-                    canva.current.height = 720;
-                    canva.current.width = 1020;
                     context.fillStyle = "gray";
                     context.fillRect(0,0,320,210);
-                    context.drawImage(vid.current, 0, 0, 300, 220);
+                    context.drawImage(vid.current, 0, 0, canva.current.width, canva.current.height);
 
                
                 
@@ -69,7 +67,7 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
         <>
             
             <video width = "320" height = "220" controls src="/medias/test_ibblGVd.mp4" ref= {vid} onTimeUpdate={(e)=>{changeFrame(e as any)}} ></video>
-            <canvas width= {720} height = {1020} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
+            <canvas width= {300} height = {220} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
             
             
             
