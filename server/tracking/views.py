@@ -25,7 +25,6 @@ def track(request):
         hoop_x = int(request.POST.get("hoop_x", 0))
         hoop_y = int(request.POST.get("hoop_y", 0))
 
-
         with Tracker(path, tracker_type) as tracker:
             frame = tracker.get_frame()
             hoop_bbox = detect_hoop(frame, (hoop_x, hoop_y))
