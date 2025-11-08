@@ -10,13 +10,20 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import VideoDisplay from "@/components/ui/VideoDisplay"
 import { useState } from 'react'
+import Video from "../Video/page"
 
 export default function UploadFileButton() {
     const dummyFile = new File(["foo"], "foo.txt", {
         type: "text/plain",
     });
-    const [currentFile, setFile] = useState(dummyFile)
+    const [currentFile, setFile] = useState(dummyFile);
+    const [ball_x, set_ball_x] = useState(null);
+    const [ball_y, set_ball_y] = useState(null);
+    const [hoop_x, set_hoop_x] = useState(null);
+    const [hoop_y, set_hoop_y] = useState(null);
+    const [start_frame, set_start_frame] = useState(0);
     const [open, setOpen] = useState(false);
 
     function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -56,10 +63,7 @@ export default function UploadFileButton() {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="w-full">
-                            <video controls preload="none">
-                                <source src={URL.createObjectURL(currentFile)} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
+                           <VideoDisplay></VideoDisplay>
                         </div>
                         <DialogFooter>
                             <Button variant="outline">Reset</Button>

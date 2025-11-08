@@ -5,7 +5,7 @@ export default function Video(){
     
     return(
         <>
-            <VideoScreen></VideoScreen>
+            <VideoDisplay></VideoDisplay>
         </>
     )
 }
