@@ -11,10 +11,14 @@ def calc_optimal_angle(p_x: int, p_y: int, h_x: int, h_y: int) -> float:
     return math.pi / 4 + math.atan((h_y - p_y) / abs((h_x - p_x)))
 
 
-def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int) -> tuple[float, float]:
+def calc_optimal_velocity(
+    p_x: int, p_y: int, h_x: int, h_y: int
+) -> tuple[float, float]:
     g = 9.81  # m/s^2
     optimal_angle = calc_optimal_angle(p_x, p_y, h_x, h_y)
 
+    # derived from kinematics with known optimal angle & no air resistance
+    # v = sqrt(x^2g/(2cos^2\theta(y-xtan\theta)))
     numerator = -((h_x - p_x) ** 2) * g
     denominator = (
         2
@@ -28,13 +32,17 @@ def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int) -> tuple[float
         v * math.sin(optimal_angle),
     )
 
+
 def calc_actual_angle(points: list[tuple[int, int]]) -> float:
     x0, y0 = points[0]
     x1, y1 = points[1]
 
     return math.atan2(y1 - y0, x1 - x0)
 
-def calc_actual_velocity(points: list[tuple[int, int]], time: float) -> tuple[float, float]:
+
+def calc_actual_velocity(
+    points: list[tuple[int, int]], time: float
+) -> tuple[float, float]:
     x0, y0 = points[0]
     x1, y1 = points[1]
 
