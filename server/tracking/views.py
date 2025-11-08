@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from tracking.tracker import Tracker
+from tracking.hoop import detect_hoop
 from django.core.files.storage import FileSystemStorage
 import os
 
@@ -19,12 +20,16 @@ def track(request):
         filename = fs.save(video.name, video)
         path = os.path.join(fs.location, filename)
         tracker_type = request.POST.get("tracker_type", "CSRT")
-        x = int(request.POST.get("x", 0))
-        y = int(request.POST.get("y", 0))
+        ball_x = int(request.POST.get("ball_x", 0))
+        ball_y = int(request.POST.get("ball_y", 0))
+        hoop_x = int(request.POST.get("hoop_x", 0))
+        hoop_y = int(request.POST.get("hoop_y", 0))
+
 
         with Tracker(path, tracker_type) as tracker:
             frame = tracker.get_frame()
-            bbox, _ = tracker.compute_bbox_from_click(frame, (x, y))
+            hoop_bbox = detect_hoop(frame, (hoop_x, hoop_y))
+            bbox, _ = tracker.compute_bbox_from_click(frame, (ball_x, ball_y))
             if bbox is None:
                 return HttpResponse(
                     "Could not find region similar to clicked color.", status=400
@@ -41,5 +46,5 @@ def track(request):
                     boxes.append(box)
                 except Exception:
                     break
-            return JsonResponse({"bboxes": boxes})
+            return JsonResponse({"ball_bboxes": boxes, "hoop_bbox": hoop_bbox})
     return HttpResponse("Invalid request method", status=405)
