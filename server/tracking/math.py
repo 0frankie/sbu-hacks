@@ -8,24 +8,24 @@ import matplotlib.pyplot as plt
 
 
 def calc_optimal_angle(p_x: int, p_y: int, h_x: int, h_y: int) -> float:
-    return math.pi / 4 + math.atan((h_y - p_y) / abs((h_x - p_x)))
+    return math.pi / 4 + math.atan((p_y - h_y) / abs((h_x - p_x)))
 
 
-def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int) -> tuple[float, float]:
-    g = 9.81  # m/s^2
+def calc_optimal_velocity(p_x: int, p_y: int, h_x: int, h_y: int, px_per_meter: float) -> tuple[float, float]:
+    g = 9.81 * px_per_meter  # m/s^2
     optimal_angle = calc_optimal_angle(p_x, p_y, h_x, h_y)
 
     numerator = -((h_x - p_x) ** 2) * g
     denominator = (
         2
         * (math.cos(optimal_angle) ** 2)
-        * ((h_y - p_y) - math.tan(optimal_angle) * abs(h_x - p_x))
+        * ((p_y - h_y) - math.tan(optimal_angle) * abs(h_x - p_x))
     )
 
     v = math.sqrt(numerator / denominator)
     return (
         np.sign(h_x - p_x) * v * math.cos(optimal_angle),
-        v * math.sin(optimal_angle),
+        -v * math.sin(optimal_angle),
     )
 
 def calc_actual_angle(points: list[tuple[int, int]]) -> float:
@@ -34,11 +34,22 @@ def calc_actual_angle(points: list[tuple[int, int]]) -> float:
 
     return math.atan2(y1 - y0, x1 - x0)
 
-def calc_actual_velocity(points: list[tuple[int, int]], time: float) -> tuple[float, float]:
-    x0, y0 = points[0]
-    x1, y1 = points[1]
+def calc_actual_velocity(points: list[tuple[int, int]], dt: float, px_per_meter: float) -> tuple[float, float]:
+    g = 9.81 * px_per_meter  # m/s^2
 
-    return ((x1 - x0) / time, (y1 - y0) / time)
+    num_points = 10
+    vx = 0
+    vy = 0
+    time = dt
+    for i in range(num_points):
+        x0, y0 = points[0]
+        x1, y1 = points[i + 1]
+        vx += (x1 - x0) / time
+        vy += (y1 - y0 - 0.5 * g * time * time) / time
+        time += dt
+    vx /= num_points
+    vy /= num_points
+    return (vx, vy)
 
 
 """

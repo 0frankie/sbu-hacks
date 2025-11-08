@@ -20,6 +20,10 @@ class Tracker:
         if self.cap.isOpened():
             self.cap.release()
 
+    def get_fps(self):
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
+        return fps
+
     def init(self, frame, bbox):
         self.bbox = bbox
         self.tracker.init(frame, bbox)
@@ -107,7 +111,7 @@ class Tracker:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # just for shape reference
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if not contours:
-            return None, mask
+            return None, 0, mask
 
         # Choose contour containing clicked point or nearest
         chosen = None
@@ -127,7 +131,7 @@ class Tracker:
                         chosen = cnt
 
         if chosen is None:
-            return None, mask
+            return None, 0, mask
 
         x, y, w, h = cv2.boundingRect(chosen)
         return (
@@ -135,4 +139,4 @@ class Tracker:
             y - added_padding,
             w + 2 * added_padding,
             h + 2 * added_padding,
-        ), mask
+        ), (w + h - 2 * added_padding) / 2, mask

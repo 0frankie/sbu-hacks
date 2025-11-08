@@ -21,6 +21,6 @@ def detect_hoop(frame, point, size=200):
             y = int(prediction['y'])
             w = int(prediction['width'])
             h = int(prediction['height'])
-            bbox = (x + point[0] - size // 2, y + point[1] - size // 2, w, h)
+            bbox = (x + point[0] - 3 * size // 4, y + point[1] - 3 * size // 4, w, h)
             break
     return bbox

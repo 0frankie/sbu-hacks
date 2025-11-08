@@ -4,7 +4,9 @@ import argparse
 from tracking.tracker import Tracker
 from tracking.hoop import detect_hoop
 import tracking.math
+import math
 
+start_frame = 40
 clicked_point = None
 h_clicked_point = None
 
@@ -69,8 +71,8 @@ def main():
 
         while True:
             display = frame.copy()
-            if clicked_point is not None:
-                cv2.circle(display, clicked_point, 5, (0, 255, 255), -1)
+            if h_clicked_point is not None:
+                cv2.circle(display, h_clicked_point, 5, (0, 255, 255), -1)
             cv2.imshow("Select basketball (click near center)", display)
 
             key = cv2.waitKey(10) & 0xFF
@@ -85,7 +87,10 @@ def main():
         cv2.destroyWindow("Select basketball (click near center)")
 
         h_bbox = detect_hoop(frame, h_clicked_point)
-        bbox, mask = tracker.compute_bbox_from_click(frame, clicked_point)
+        if h_bbox is None:
+            print("[WARN] Could not detect hoop.")
+            sys.exit(0)
+        bbox, size, mask = tracker.compute_bbox_from_click(frame, clicked_point)
         if bbox is None:
             print("[WARN] Could not find region similar to clicked color.")
             cv2.imshow("Mask", mask)
@@ -103,6 +108,9 @@ def main():
 
         tracker.init(frame, bbox)
 
+        diffs = []
+        points = [(x + w // 2, y + h // 2)]
+
         while True:
             success = False
             try:
@@ -110,7 +118,9 @@ def main():
             except Exception:
                 break
             if success:
+                diffs.append(math.sqrt((x-box[0])**2 + (y-box[1])**2))
                 (x, y, w, h) = [int(v) for v in box]
+                points.append((x + w // 2, y + h // 2))
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 cv2.putText(
                     frame,
@@ -136,8 +146,40 @@ def main():
             if cv2.waitKey(30) & 0xFF == ord("q"):
                 break
 
-        cv2.rectangle(first_frame, (bbox[0], box[1]), (box[0] + box[2], box[1] + box[3]), (0, 255, 0), 2)
+        basketball_size = 0.234
+        px_per_meter = size / basketball_size
+        actual_angle = tracking.math.calc_actual_angle(points[45:])
+        actual_vel = tracking.math.calc_actual_velocity(points[45:], 1/tracker.get_fps(), px_per_meter)
+        optimal_vel = tracking.math.calc_optimal_velocity(
+            points[45][0],
+            points[45][1],
+            h_bbox[0] + h_bbox[2] // 2,
+            h_bbox[1],
+            px_per_meter,
+        )
+        cv2.rectangle(first_frame, (h_bbox[0], h_bbox[1]), (h_bbox[0] + h_bbox[2], h_bbox[1] + h_bbox[3]), (0, 0, 255), 2)
+        cv2.circle(first_frame, (h_bbox[0] + h_bbox[2] // 2, h_bbox[1]), 5, (255, 255, 0), -1)
+        for point in points[45:]:
+            cv2.circle(first_frame, point, 5, (255, 0, 0), -1)
+        t = 0
+        x = points[45][0]
+        y = points[45][1]
+        while y > 0 and x < frame.shape[1] and x > 0 and y < frame.shape[0]:
+            cv2.circle(first_frame, (x, y), 5, (0, 0, 255), -1)
+            x = int(points[45][0] + actual_vel[0] * t)
+            y = int(points[45][1] + actual_vel[1] * t + 0.5 * 9.81 * px_per_meter * t * t)
+            t += 0.01
+        t = 0
+        x = points[45][0]
+        y = points[45][1]
+        while y > 0 and x < frame.shape[1] and x > 0 and y < frame.shape[0]:
+            cv2.circle(first_frame, (x, y), 5, (0, 255, 0), -1)
+            x = int(points[45][0] + optimal_vel[0] * t)
+            y = int(points[45][1] + optimal_vel[1] * t + 0.5 * 9.81 * px_per_meter * t * t)
+            t += 0.01
+        cv2.rectangle(first_frame, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), (0, 255, 0), 2)
         cv2.imshow("First Frame", first_frame)
+        cv2.waitKey(0)
 
         cv2.destroyAllWindows()
 
