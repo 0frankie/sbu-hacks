@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function Home() {
   let response = await fetch('http://localhost:8000/api/all', {
@@ -10,7 +11,9 @@ export default async function Home() {
     return (
       <div className="grid grid-rows-3 grid-cols-3 gap-4">
         {allVideos.map((video) => (
-          <img src={`http://localhost:8000/media/${video.thumbnail}`} alt="" />
+          <Link className="flex items-center flex-row gap-2" href={`/video/${video.id}`}>
+            <img src={`http://localhost:8000/media/${video.thumbnail}`} alt="" />
+          </Link>
         ))}
       </div>
     );
