@@ -1,3 +1,4 @@
+from django.core.files.base import ContentFile
 from django.http import HttpResponse, JsonResponse
 import cv2
 from django.views.decorators.csrf import csrf_exempt
@@ -33,7 +34,11 @@ def track(request):
         end_frame = int(request.POST.get("end_frame", 0))
 
         with Tracker(path, tracker_type) as tracker:
+            tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
             frame = tracker.get_frame()
+            _, buffer = cv2.imencode('.jpg', frame)
+            thumbnail_name = "thumbnail_" + filename.split(".")[0] + ".jpg"
+            fs.save(thumbnail_name, ContentFile(buffer.tobytes()))
             hoop_bbox = detect_hoop(frame, (hoop_x, hoop_y))
             if hoop_bbox is None:
                 return HttpResponse("Could not detect hoop.", status=400)
@@ -48,7 +53,6 @@ def track(request):
 
             tracker.init(frame, bbox)
 
-            tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
             boxes = [(0, 0, 0, 0)] * start_frame
             i = 0
             while i < end_frame:
@@ -82,6 +86,7 @@ def track(request):
 
             analyzed_shot = AnalyzedShot(
                 video=filename,
+                thumbnail=thumbnail_name,
                 start_frame=start_frame,
                 end_frame=end_frame,
                 ball_bboxes=boxes,
@@ -118,20 +123,5 @@ def delete(request, id):
         shot = AnalyzedShot.objects.get(id=id)
         shot.delete()
         return HttpResponse("Shot deleted", status=200)
-    except AnalyzedShot.DoesNotExist:
-        return HttpResponse("Shot not found", status=404)
-
-def thumbnail(request, id):
-    try:
-        shot = AnalyzedShot.objects.get(id=id)
-        fs = FileSystemStorage()
-        path = os.path.join(fs.location, shot.video)
-        cap = cv2.VideoCapture(path)
-        cap.set(cv2.CAP_PROP_POS_FRAMES, shot.start_frame - 1)
-        ret, frame = cap.read()
-        if not ret:
-            return HttpResponse("Could not read frame", status=500)
-        _, buffer = cv2.imencode('.jpg', frame)
-        return HttpResponse(buffer.tobytes(), content_type="image/jpeg")
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
