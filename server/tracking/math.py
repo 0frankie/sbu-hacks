@@ -95,8 +95,8 @@ def check_is_in_basket(
 ) -> bool:
     for pt in points:
         if (
-            math.sqrt(pt[0] ** 2 + h_center[0] ** 2) < 625
-            and math.sqrt(pt[1] ** 2 + h_center[1] ** 2) < 625
+            math.sqrt(pt[0] ** 2 + h_center[0] ** 2) < 484
+            and math.sqrt(pt[1] ** 2 + h_center[1] ** 2) < 484
         ):
             return True
     return False
