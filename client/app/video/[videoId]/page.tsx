@@ -12,6 +12,8 @@ export default async function VideoPage({
   })
   const videoMetadata = await response.json()
   return (
+    <div className="p-4">
     <VideoBody videoMetadata={videoMetadata}/>
+    </div>
   )
 }

@@ -5,7 +5,7 @@ import UploadFileButton from "../../app/ui/upload-video-button"
 
 export default function Header() {
     return (
-        <nav className="pl-48 py-2 w-full pr-2 bg-background-50 flex flex-row items-center gap-2">
+        <nav className="pl-44 py-2 pr-2 bg-background-50 flex flex-row items-center gap-2">
             <UploadFileButton />
             <ThemeToggleButton />
         </nav>

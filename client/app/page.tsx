@@ -1,11 +1,7 @@
 'use client'
 
-import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import DeleteVideoButton from "@/components/ui/deletevideobutton";
 import useSWR, { useSWRConfig } from 'swr'
-import useSWRMutation from 'swr/mutation'
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
@@ -20,7 +16,7 @@ export default function Home() {
 
   const { data: allVideos, error, isLoading } = useSWR('http://localhost:8000/api/all', fetcher)
 
-  if (error) return <div>failed to load</div>
+  if (error) return <div>Failed to load, is the server running? </div>
 
   // if the user has some videos
   if (isLoading) {
