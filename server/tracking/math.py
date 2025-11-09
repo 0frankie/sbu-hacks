@@ -61,6 +61,13 @@ def calc_actual_velocity(
         vx += (x1 - xi) / dt
     vx /= num_points
     vy /= num_points
+    
+    all_x = []
+    all_y = []
+    for i in range(len(points)):
+        all_x.append(points[i][0])
+        all_y.append(points[i][1])
+    area_under_curve(all_x, all_y)
     return (vx, vy)
 
 
@@ -84,16 +91,14 @@ def speed_diff(
 
 
 # this currently draws a close approximation, but not the exact curve
-def area_under_curve(
-    p_x: int, p_y: int, h_x: int, h_y: int, m_x: int, m_y: int
-) -> float:
-    x = np.array(
-        [[p_x**2, p_x, 1], [h_x**2, h_x, 1], [m_x**2, m_x, 1]], dtype=np.dtype(float)
-    )
+def area_under_curve(all_x: list[int], all_y: list[int]) -> float:
+    xs = np.array([], dtype=np.dtype(float))
 
-    y = np.array([p_y, h_y, m_y], dtype=np.dtype(float))
+    # for x in all_x:
+    #     np.append(xs, [x ** 2, x, 1])
+    ys = np.array([])
 
-    a, b, c = np.linalg.solve(x, y)
+    a, b, c = np.linalg.solve(xs, ys)
 
     print(f"{a} + {b} + {c}")
 
