@@ -91,12 +91,9 @@ def track(request):
             )
             made_in_basket = tracking.math.check_is_in_basket(
                 points,
-                (hoop_bbox[0], hoop_bbox[1])
+                (hoop_bbox[0] + hoop_bbox[2] // 2, hoop_bbox[1] + hoop_bbox[3] // 2),
             )
-            is_overshot = tracking.math.check_is_overshot(
-                points,
-                hoop_bbox 
-            )
+            is_overshot = tracking.math.check_is_overshot(points, hoop_bbox)
             analyzed_shot = AnalyzedShot(
                 video=filename,
                 thumbnail=thumbnail_name,
