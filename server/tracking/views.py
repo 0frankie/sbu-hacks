@@ -142,16 +142,18 @@ def delete(request, id):
         return HttpResponse("Shot not found", status=404)
 
 
-def all_info(request, id):
+def all_info(request):
     shots = AnalyzedShot.objects.all()
-    total_shots = model_to_dict(len(shots))
-    shots_missed = model_to_dict(
-        reduce(lambda acc, shot,: 1 + acc if shot.made_in_basket else acc, shots)
-    )
-    shots_made = model_to_dict(len(shots) - shots_missed)
-    shot_statistics = [
-        shots_made,
-        shots_missed,
-        total_shots,
-    ]
+    total_shots = len(shots)
+    shots_missed = 0 
+    for shot in shots:
+        if shot.made_in_basket:
+            shots_missed+=1
+
+    shots_made = len(shots) - shots_missed
+    shot_statistics = {
+        "shots_made": shots_made,
+        "shots_missed": shots_missed,
+        "total_shots": total_shots,
+    }
     return JsonResponse(shot_statistics, safe=False)

@@ -10,15 +10,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-<<<<<<< Updated upstream
+
 import { useState, useRef } from 'react'
 import { useSWRConfig } from "swr"
 // import Video from "../Video/page"
-=======
-import VideoDisplay from "@/components/ui/VideoDisplay"
-import { useRef, useState } from 'react'
-import Video from "../Video/page"
->>>>>>> Stashed changes
 
 // function DraggablePoint() {
 //     const pointRef = useRef(null);
@@ -40,7 +35,6 @@ export default function UploadFileButton() {
         type: "video/*",
     });
     const [currentFile, setFile] = useState(dummyFile);
-<<<<<<< Updated upstream
     const [open, setOpen] = useState(false);
     const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
     const [hoopPosition, setHoopPosition] = useState({ x: 0, y: 0 });
@@ -48,15 +42,6 @@ export default function UploadFileButton() {
     const [start_time, set_start_time] = useState(0);
     const [end_time, set_end_time] = useState(0);
     const videoElementRef = useRef<HTMLVideoElement>(null);
-=======
-    const [open, setOpen] = useState(true);
-
-    const [ball_x, set_ball_x] = useState(null);
-    const [ball_y, set_ball_y] = useState(null);
-    const [hoop_x, set_hoop_x] = useState(null);
-    const [hoop_y, set_hoop_y] = useState(null);
-    const [start_frame, set_start_frame] = useState(0);
->>>>>>> Stashed changes
 
     function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
         // event.target.files will have type FileList[File]
@@ -133,7 +118,6 @@ export default function UploadFileButton() {
                                 Click on the ball and the hoop with your mouse.
                             </DialogDescription>
                         </DialogHeader>
-<<<<<<< Updated upstream
                         <div className="w-full">
                             <div className="h-[260px] relative">
                                 <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none" >
@@ -168,10 +152,6 @@ export default function UploadFileButton() {
                                     <p>Time: {end_time}</p>
                                 </div>
                             </div>
-=======
-                        <div className="w-95">
-                            <VideoDisplay></VideoDisplay>
->>>>>>> Stashed changes
                         </div>
                         <DialogFooter className="flex flex-row justify-end">
                             <Button variant="outline">Reset</Button>
