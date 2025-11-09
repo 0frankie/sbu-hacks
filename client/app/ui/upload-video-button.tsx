@@ -11,9 +11,12 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useState, useRef } from 'react'
-import Video from "../Video/page"
+import { useSWRConfig } from "swr"
+// import Video from "../Video/page"
 
 export default function UploadFileButton() {
+    const { mutate } = useSWRConfig()
+
     const dummyFile = new File(["foo"], "foo.mp4", {
         type: "video/*",
     });
@@ -32,6 +35,7 @@ export default function UploadFileButton() {
         setOpen(true);
     }
     async function submitFile() {
+        setOpen(false);
         const formData = new FormData();
         formData.append('video', currentFile);
         formData.append('ball_x', JSON.stringify(ballPosition.x));
@@ -48,7 +52,7 @@ export default function UploadFileButton() {
             method: "POST",
             body: formData
         })
-        setOpen(false);
+        mutate('http://localhost:8000/api/all')
     }
 
     function handleClick(event) {
@@ -67,34 +71,32 @@ export default function UploadFileButton() {
         else {
         }
     }
-    
-    function changeStartTime(){
-            set_start_time(videoElementRef.current.currentTime);
-            console.log(videoElementRef.current.currentTime);
-        
+
+    function changeStartTime() {
+        set_start_time(videoElementRef.current.currentTime);
+        console.log(videoElementRef.current.currentTime);
+
     }
-    function changeEndTime(){
-        
-            set_end_time(videoElementRef.current.currentTime);
-            console.log(videoElementRef.current.currentTime);
-        
+    function changeEndTime() {
+        set_end_time(videoElementRef.current.currentTime);
+        console.log(videoElementRef.current.currentTime);
     }
 
     return (
         <>
-            <input onChange={handleFile} type="file" id="video" accept="video/*" name="" hidden />
-            <label htmlFor="video" className="w-full">
-                <div className="h-10 cursor-pointer flex items-center flex-row px-2 gap-2 py-1 bg-primary text-on-primary rounded ">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
-                    </svg>
-                    {/* <button onClick={() => { console.log(open) }}>am i open</button> */}
-                    <p className="max-w-md text-md font-medium leading-8 truncate"> Upload a video for analysis
-                    </p>
-                </div>
-            </label>
+            {/* <div className="w-128"> */}
+                <input onChange={handleFile} type="file" id="video" accept="video/*" name="" hidden />
+                <label htmlFor="video" className="w-full inline-block">
+                    <div className="w-full h-10 cursor-pointer flex items-center flex-row px-2 gap-2 py-1 bg-primary text-on-primary rounded ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
+                        </svg>
+                        <p className="max-w-md text-md font-medium leading-8 truncate"> Upload a video for analysis
+                        </p>
+                    </div>
+                </label>
+            {/* </div> */}
             <Dialog open={open} onOpenChange={setOpen}>
-                <div className="w-screen h-fit">
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Video Processing</DialogTitle>
@@ -110,8 +112,6 @@ export default function UploadFileButton() {
                                 </video>
                                 <canvas className={`w-[462px] h-[260px] absolute bg-amber-300 opacity-10 ${(selecting === 'ball' || selecting === 'hoop') ? "" : "hidden"}`} onClick={handleClick}></canvas>
                             </div>
-                            {/* <button onClick={() => {console.log(videoElementRef.current.videoWidth)}}>how big am i</button>
-                            <button onClick={() => {console.log(videoElementRef.current.getBoundingClientRect())}}>where am i </button> */}
                             <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={() => { setSelecting('ball') }}>Select ball position</Button>
                                 <div className="flex flex-row gap-4">
@@ -126,13 +126,13 @@ export default function UploadFileButton() {
                                     <p>Y: {hoopPosition.y}</p>
                                 </div>
                             </div>
-                             <div className="flex flex-row items-center justify-between">
+                            <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={changeStartTime}>Set Start Time</Button>
                                 <div className="flex flex-row gap-4">
                                     <p>Time: {start_time}</p>
                                 </div>
                             </div>
-                             <div className="flex flex-row items-center justify-between">
+                            <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={changeEndTime}>Set End Time</Button>
                                 <div className="flex flex-row gap-4">
                                     <p>Time: {end_time}</p>
@@ -149,9 +149,8 @@ export default function UploadFileButton() {
                             </Button>
                         </DialogFooter>
                     </DialogContent>
-
-                </div>
             </Dialog>
+
         </>
     )
 }

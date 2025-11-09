@@ -1,0 +1,24 @@
+.card{
+    display: flex;
+    flex-direction: column;
+    height:150px;
+    padding: 20px;
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    
+    /* Appealing Contrast Colors */
+    background-color: #f7f7f7; /* Very light gray background */
+    ;
+    color: #1a1a1a; /* Very dark gray text (almost black) */
+
+}
+.card h1{
+    font-size: 18px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-align: center;
+}
+.card p {
+    font-size:17px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: center;
+}
