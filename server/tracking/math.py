@@ -66,7 +66,7 @@ def calc_actual_velocity(
     for i in range(0, len(points), 3):
         all_x.append(points[i][0])
         all_y.append(points[i][1])
-    area_under_curve(all_x, all_y)
+    # area_under_curve(all_x, all_y)
     return (vx, vy)
 
 

@@ -11,9 +11,12 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useState, useRef } from 'react'
-import Video from "../Video/page"
+import { useSWRConfig } from "swr"
+// import Video from "../Video/page"
 
 export default function UploadFileButton() {
+    const { mutate } = useSWRConfig()
+
     const dummyFile = new File(["foo"], "foo.mp4", {
         type: "video/*",
     });
@@ -32,6 +35,7 @@ export default function UploadFileButton() {
         setOpen(true);
     }
     async function submitFile() {
+        setOpen(false);
         const formData = new FormData();
         formData.append('video', currentFile);
         formData.append('ball_x', JSON.stringify(ballPosition.x));
@@ -48,7 +52,7 @@ export default function UploadFileButton() {
             method: "POST",
             body: formData
         })
-        setOpen(false);
+        mutate('http://localhost:8000/api/all')
     }
 
     function handleClick(event) {
@@ -67,17 +71,17 @@ export default function UploadFileButton() {
         else {
         }
     }
-    
-    function changeStartTime(){
-            set_start_time(videoElementRef.current.currentTime);
-            console.log(videoElementRef.current.currentTime);
-        
+
+    function changeStartTime() {
+        set_start_time(videoElementRef.current.currentTime);
+        console.log(videoElementRef.current.currentTime);
+
     }
-    function changeEndTime(){
-        
-            set_end_time(videoElementRef.current.currentTime);
-            console.log(videoElementRef.current.currentTime);
-        
+    function changeEndTime() {
+
+        set_end_time(videoElementRef.current.currentTime);
+        console.log(videoElementRef.current.currentTime);
+
     }
 
     return (
@@ -126,13 +130,13 @@ export default function UploadFileButton() {
                                     <p>Y: {hoopPosition.y}</p>
                                 </div>
                             </div>
-                             <div className="flex flex-row items-center justify-between">
+                            <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={changeStartTime}>Set Start Time</Button>
                                 <div className="flex flex-row gap-4">
                                     <p>Time: {start_time}</p>
                                 </div>
                             </div>
-                             <div className="flex flex-row items-center justify-between">
+                            <div className="flex flex-row items-center justify-between">
                                 <Button variant="outline" onClick={changeEndTime}>Set End Time</Button>
                                 <div className="flex flex-row gap-4">
                                     <p>Time: {end_time}</p>
