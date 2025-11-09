@@ -111,8 +111,8 @@ def track(request):
                 px_per_meter=px_per_meter,
                 start_pos_x=points[start_frame][0],
                 start_pos_y=points[start_frame][1],
-                made_in_basket=
-                is_overshot=
+                made_in_basket=made_in_basket,
+                is_overshot=is_overshot,
             )
 
             analyzed_shot.save()
