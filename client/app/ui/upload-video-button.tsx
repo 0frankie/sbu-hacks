@@ -48,6 +48,7 @@ export default function UploadFileButton() {
             method: "POST",
             body: formData
         })
+        setOpen(false);
     }
 
     function handleClick(event) {
