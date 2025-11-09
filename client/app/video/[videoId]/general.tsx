@@ -71,7 +71,7 @@ export default function VideoBody({
   },[])
   return (
     <div >
-      <video ref={videoElementRef} style={{position:"absolute"}} height = {377.5} width={600}  controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
+      <video ref={videoElementRef} style={{position:"absolute"}} height = {337.5} width={600}  controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
       <canvas ref = {canva} style ={{position:'absolute', pointerEvents:"none", left:videoElementRef.current?.getBoundingClientRect().left, top: videoElementRef.current?.getBoundingClientRect().top}}></canvas>
     </div>
   )
