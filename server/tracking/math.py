@@ -1,5 +1,4 @@
 import math
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -64,7 +63,7 @@ def calc_actual_velocity(
     
     all_x = []
     all_y = []
-    for i in range(len(points)):
+    for i in range(0, len(points), 3):
         all_x.append(points[i][0])
         all_y.append(points[i][1])
     area_under_curve(all_x, all_y)
@@ -92,17 +91,30 @@ def speed_diff(
 
 # this currently draws a close approximation, but not the exact curve
 def area_under_curve(all_x: list[int], all_y: list[int]) -> float:
-    xs = np.array([], dtype=np.dtype(float))
+    xs = np.eye(len(all_x), dtype=np.dtype(float))
 
-    # for x in all_x:
-    #     np.append(xs, [x ** 2, x, 1])
-    ys = np.array([])
+    for (i, x) in enumerate(all_x):
+        for j in reversed(range(len(all_x))):
+            xs[i][len(all_x) - 1 - j] = x ** j
+        print(xs.shape)
+    ys = np.array([all_y], dtype=np.dtype(float))
+    ys = np.transpose(ys)
 
-    a, b, c = np.linalg.solve(xs, ys)
+    print(ys.shape)
+    solutions = np.linalg.solve(xs, ys)
+    
+    print(solutions.shape)
 
-    print(f"{a} + {b} + {c}")
-
-    plot(a, b, c)
+    x_axis = np.linspace(0, 1920, 1)
+    y_axis = 0
+    for i in reversed(range(len(solutions))):
+        y_axis += solutions[len(solutions) - 1 - i] ** i
+        print(y_axis)
+    test_plot()
+    plt.fill_between(xs, ys)
+    plt.plot(x_axis, y_axis)
+    plt.show()
+    
     return 1.1
 
 
