@@ -147,7 +147,7 @@ def all_info(request):
     total_shots = len(shots)
     shots_missed = 0 
     for shot in shots:
-        if shot.made_in_basket:
+        if not shot.made_in_basket:
             shots_missed+=1
 
     shots_made = len(shots) - shots_missed
