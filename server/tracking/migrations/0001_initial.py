@@ -28,6 +28,8 @@ class Migration(migrations.Migration):
                 ('px_per_meter', models.FloatField()),
                 ('start_pos_x', models.IntegerField()),
                 ('start_pos_y', models.IntegerField()),
+                ('made_in_basket', models.BooleanField()),
+                ('is_overshot', models.BooleanField())
             ],
         ),
     ]

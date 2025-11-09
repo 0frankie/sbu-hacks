@@ -1,15 +1,18 @@
-from django.core.files.base import ContentFile
-from django.http import HttpResponse, JsonResponse
-import cv2
-from django.views.decorators.csrf import csrf_exempt
-from tracking.tracker import Tracker
-from tracking.hoop import detect_hoop
-import tracking.math
-from django.forms.models import model_to_dict
-from django.core.files.storage import FileSystemStorage
-from tracking.models import AnalyzedShot
-import os
 import math
+import os
+from functools import reduce
+
+import cv2
+from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+import tracking.math
+from tracking.hoop import detect_hoop
+from tracking.models import AnalyzedShot
+from tracking.tracker import Tracker
 
 
 def index(request):
@@ -39,7 +42,7 @@ def track(request):
             end_frame = int(fps * end_time)
             tracker.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame - 1)
             frame = tracker.get_frame()
-            _, buffer = cv2.imencode('.jpg', frame)
+            _, buffer = cv2.imencode(".jpg", frame)
             thumbnail_name = "thumbnail_" + filename.split(".")[0] + ".jpg"
             fs.save(thumbnail_name, ContentFile(buffer.tobytes()))
             hoop_bbox = detect_hoop(frame, (hoop_x, hoop_y))
@@ -86,7 +89,14 @@ def track(request):
                 hoop_bbox[1],
                 px_per_meter,
             )
-
+            made_in_basket = tracking.math.check_is_in_basket(
+                points,
+                (hoop_bbox[0], hoop_bbox[1])
+            )
+            is_overshot = tracking.math.check_is_overshot(
+                points,
+                hoop_bbox 
+            )
             analyzed_shot = AnalyzedShot(
                 video=filename,
                 thumbnail=thumbnail_name,
@@ -101,18 +111,22 @@ def track(request):
                 px_per_meter=px_per_meter,
                 start_pos_x=points[start_frame][0],
                 start_pos_y=points[start_frame][1],
+                made_in_basket=
+                is_overshot=
             )
 
             analyzed_shot.save()
 
             return JsonResponse(model_to_dict(analyzed_shot))
-    
+
     return HttpResponse("Invalid request method", status=405)
+
 
 def all(request):
     shots = AnalyzedShot.objects.all()
     shots_list = [model_to_dict(shot) for shot in shots]
     return JsonResponse(shots_list, safe=False)
+
 
 def get(request, id):
     try:
@@ -121,6 +135,7 @@ def get(request, id):
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
 
+
 def delete(request, id):
     try:
         shot = AnalyzedShot.objects.get(id=id)
@@ -128,3 +143,18 @@ def delete(request, id):
         return HttpResponse("Shot deleted", status=200)
     except AnalyzedShot.DoesNotExist:
         return HttpResponse("Shot not found", status=404)
+
+
+def all_info(request, id):
+    shots = AnalyzedShot.objects.all()
+    total_shots = model_to_dict(len(shots))
+    shots_missed = model_to_dict(
+        reduce(lambda acc, shot,: 1 + acc if shot.made_in_basket else acc, shots)
+    )
+    shots_made = model_to_dict(len(shots) - shots_missed)
+    shot_statistics = [
+        shots_made,
+        shots_missed,
+        total_shots,
+    ]
+    return JsonResponse(shot_statistics, safe=False)

@@ -1,4 +1,5 @@
 import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -60,7 +61,7 @@ def calc_actual_velocity(
         vx += (x1 - xi) / dt
     vx /= num_points
     vy /= num_points
-    
+
     all_x = []
     all_y = []
     for i in range(0, len(points), 3):
@@ -89,32 +90,59 @@ def speed_diff(
     return calc_diff(calc_optimal_velocity(p_x, p_y, h_x, h_y), velocity)
 
 
+def check_is_in_basket(
+    points: list[tuple[int, int]], h_center: tuple[float, float]
+) -> bool:
+    for pt in points:
+        if (
+            math.sqrt(pt[0] ** 2 + h_center[0] ** 2) < 20
+            and math.sqrt(pt[1] ** 2 + h_center[1] ** 2) < 20
+        ):
+            return True
+    return False
+
+
+def check_is_overshot(
+    points: list[tuple[int, int]], h_bbox: tuple[float, float, float, float]
+) -> bool:
+    for pt in points:
+        if math.sqrt(pt[0] ** 2 + (h_bbox[0] + h_bbox[2] // 2) ** 2) < 20:
+            if np.sign(pt[1] - (h_bbox[1] + h_bbox[3] // 2)) > 0:
+                return True
+            else:
+                return False
+    return False
+
+
 # this currently draws a close approximation, but not the exact curve
 def area_under_curve(all_x: list[int], all_y: list[int]) -> float:
+    # for x in all_x:
+
     xs = np.eye(len(all_x), dtype=np.dtype(float))
 
-    for (i, x) in enumerate(all_x):
+    for i, x in enumerate(all_x):
         for j in reversed(range(len(all_x))):
-            xs[i][len(all_x) - 1 - j] = x ** j
-        print(xs.shape)
+            xs[i][len(all_x) - 1 - j] = x**j
+        # print(xs.shape)
     ys = np.array([all_y], dtype=np.dtype(float))
     ys = np.transpose(ys)
 
-    print(ys.shape)
+    # print(ys.shape)
     solutions = np.linalg.solve(xs, ys)
-    
-    print(solutions.shape)
 
-    x_axis = np.linspace(0, 1920, 1)
+    # print(solutions.shape)
+
+    x_axis = np.linspace(0, 400, 100)
     y_axis = 0
     for i in reversed(range(len(solutions))):
-        y_axis += solutions[len(solutions) - 1 - i] ** i
-        print(y_axis)
+        print(solutions[len(solutions) - 1 - i][0])
+        y_axis += solutions[len(solutions) - 1 - i][0] * x_axis**i
+        # print(y_axis)
     test_plot()
-    plt.fill_between(xs, ys)
+    plt.fill_between(x_axis, y_axis)
     plt.plot(x_axis, y_axis)
     plt.show()
-    
+
     return 1.1
 
 
