@@ -13,7 +13,13 @@ export default async function VideoPage({
   const videoMetadata = await response.json()
   return (
     <div className="p-4">
-    <VideoBody videoMetadata={videoMetadata}/>
+      <VideoBody videoMetadata={videoMetadata} />
+      <div className="mt-[350px]">
+        <div className="">
+          <h1>Optimal Angle</h1>
+          <p>{(Math.floor(videoMetadata.optimal_angle * 180 / 3.14))} degrees</p>
+        </div>
+      </div>
     </div>
   )
 }

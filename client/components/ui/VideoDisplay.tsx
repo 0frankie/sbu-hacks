@@ -63,23 +63,32 @@ export default function VideoDisplay({videoFile, set_ball_x, set_ball_y, set_hoo
                     const context = canva.current.getContext("2d");
                     context.fillStyle = "gray";
                     context.fillRect(0,0,320,210);
+<<<<<<< Updated upstream
                     context.drawImage(vid.current, 0, 0, canva.current.width, canva.current.height);
 
+=======
+                    context.drawImage(vid.current, 0, 0, 300, 220);
+>>>>>>> Stashed changes
             }
-            
-
         }
         
-
     },[vidTime])
 
     return(
+<<<<<<< Updated upstream
             <div className="absolute">
             <video width = "320" height = "220" controls src="/medias/test_ibblGVd.mp4" ref= {vid} onTimeUpdate={(e)=>{changeFrame(e as any)}} ></video>
             <canvas width= {300} height = {220} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
             <button onClick={nextFrame}>next</button>
             <button onClick={prevFrame}>before</button>
             </div>
+=======
+            <div className="flex flex-col gap-4">
+            <video width = "320" height = "220" controls src="/medias/test_ibblGVd.mp4" ref= {vid} onTimeUpdate={(e)=>{changeFrame(e as any)}} ></video>
+            <canvas className="bg-amber-100" width= {320} height = {220} ref = {canva} onClick={(event)=>{getPosition(event)}}></canvas>
+            </div>
+        
+>>>>>>> Stashed changes
     )
     
     
