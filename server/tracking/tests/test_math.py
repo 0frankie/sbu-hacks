@@ -158,6 +158,11 @@ def main():
             h_bbox[1],
             px_per_meter,
         )
+        made_in_basket = tracking.math.check_is_in_basket(
+            points,
+            (h_bbox[0] + h_bbox[2] // 2, h_bbox[1] + h_bbox[3] // 2),
+        )
+        is_overshot = tracking.math.check_is_overshot(points, h_bbox)
         cv2.rectangle(first_frame, (h_bbox[0], h_bbox[1]), (h_bbox[0] + h_bbox[2], h_bbox[1] + h_bbox[3]), (0, 0, 255), 2)
         cv2.circle(first_frame, (h_bbox[0] + h_bbox[2] // 2, h_bbox[1]), 5, (255, 255, 0), -1)
         for point in points[start_frame:]:

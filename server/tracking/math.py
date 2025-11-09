@@ -94,10 +94,7 @@ def check_is_in_basket(
     points: list[tuple[int, int]], h_center: tuple[float, float]
 ) -> bool:
     for pt in points:
-        if (
-            math.sqrt(pt[0] ** 2 + h_center[0] ** 2) < 484
-            and math.sqrt(pt[1] ** 2 + h_center[1] ** 2) < 484
-        ):
+        if abs(pt[0] - h_center[0]) < 25 and abs(pt[1] - h_center[1]) < 25:
             return True
     return False
 
@@ -106,8 +103,9 @@ def check_is_overshot(
     points: list[tuple[int, int]], h_bbox: tuple[float, float, float, float]
 ) -> bool:
     for pt in points:
-        if math.sqrt(pt[0] ** 2 + (h_bbox[0] + h_bbox[2] // 2) ** 2) < 100:
-            if np.sign(pt[1] - (h_bbox[1] + h_bbox[3] // 2)) > 0:
+        if abs(pt[0] - (h_bbox[0] + h_bbox[2] // 2)) < 50:
+            # if dist from left is greater than dist from right, then overshooting
+            if np.sign(pt[1] - (h_bbox[1] + h_bbox[3] // 2)) < 0:
                 return True
             else:
                 return False
