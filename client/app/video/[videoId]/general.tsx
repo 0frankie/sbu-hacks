@@ -39,14 +39,14 @@ videoMetadata: any
         const y = (perfectPathCoords[i][1] )* (videoElementRef.current.height/1080);
         console.log("x" + x + "y" + y);
        
-        context?.fillRect(x, y, 3, 3);
+        context?.fillRect(x, y, 5, 5);
       }
      
     }
   },[])
   return (
-    <div>
-      <video ref={videoElementRef} style={{position:"absolute"}} height = {225} width={400}  controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
+    <div >
+      <video ref={videoElementRef} style={{position:"absolute"}} height = {377.5} width={600}  controls src={`http://localhost:8000/media/${videoMetadata.video}`}></video>
       <canvas ref = {canva} style ={{position:'absolute', pointerEvents:"none", left:videoElementRef.current?.getBoundingClientRect().left, top: videoElementRef.current?.getBoundingClientRect().top}}></canvas>
     </div>
   )
