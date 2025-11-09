@@ -48,6 +48,15 @@ export default function UploadFileButton() {
         setFile(event.target.files[0]); // fix event.target.files' is possibly 'null' later
         setOpen(true);
     }
+
+    function handleReset(event: React.ChangeEvent<HTMLInputElement>) {
+        setBallPosition({ x: 0, y: 0 });
+        setHoopPosition({ x: 0, y: 0 });
+        set_start_time(0);
+        set_end_time(0);
+        setSelecting("");
+    }
+
     async function submitFile() {
         setOpen(false);
         const formData = new FormData();
@@ -99,70 +108,70 @@ export default function UploadFileButton() {
     return (
         <>
             {/* <div className="w-128"> */}
-                <input onChange={handleFile} type="file" id="video" accept="video/*" name="" hidden />
-                <label htmlFor="video" className="w-full inline-block">
-                    <div className="w-full h-10 cursor-pointer flex items-center flex-row px-2 gap-2 py-1 bg-primary text-on-primary rounded ">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
-                        </svg>
-                        <p className="max-w-md text-md font-medium leading-8 truncate"> Upload a video for analysis
-                        </p>
-                    </div>
-                </label>
+            <input onChange={handleFile} type="file" id="video" accept="video/*" name="" hidden />
+            <label htmlFor="video" className="w-full inline-block">
+                <div className="w-full h-10 cursor-pointer flex items-center flex-row px-2 gap-2 py-1 bg-primary text-on-primary rounded ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
+                    </svg>
+                    <p className="max-w-md text-md font-medium leading-8 truncate"> Upload a video for analysis
+                    </p>
+                </div>
+            </label>
             {/* </div> */}
             <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Video Processing</DialogTitle>
-                            <DialogDescription>
-                                Click on the ball and the hoop with your mouse.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="w-full">
-                            <div className="h-[260px] relative">
-                                <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none" >
-                                    <source src={URL.createObjectURL(currentFile)} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                                <canvas className={`w-[462px] h-[260px] absolute bg-amber-300 opacity-10 ${(selecting === 'ball' || selecting === 'hoop') ? "" : "hidden"}`} onClick={handleClick}></canvas>
-                            </div>
-                            <div className="flex flex-row items-center justify-between">
-                                <Button variant="outline" onClick={() => { setSelecting('ball') }}>Select ball position</Button>
-                                <div className="flex flex-row gap-4">
-                                    <p>X: {ballPosition.x}</p>
-                                    <p>Y: {ballPosition.y}</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center justify-between">
-                                <Button variant="outline" onClick={() => { setSelecting('hoop') }}>Select hoop position</Button>
-                                <div className="flex flex-row gap-4">
-                                    <p>X: {hoopPosition.x}</p>
-                                    <p>Y: {hoopPosition.y}</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center justify-between">
-                                <Button variant="outline" onClick={changeStartTime}>Set Start Time</Button>
-                                <div className="flex flex-row gap-4">
-                                    <p>Time: {start_time}</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center justify-between">
-                                <Button variant="outline" onClick={changeEndTime}>Set End Time</Button>
-                                <div className="flex flex-row gap-4">
-                                    <p>Time: {end_time}</p>
-                                </div>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Video Processing</DialogTitle>
+                        <DialogDescription>
+                            Click on the ball and the hoop with your mouse.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="w-full">
+                        <div className="h-[260px] relative">
+                            <video ref={videoElementRef} width={462} height={260} className="absolute" controls preload="none" >
+                                <source src={URL.createObjectURL(currentFile)} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                            <canvas className={`w-[462px] h-[260px] absolute bg-amber-300 opacity-10 ${(selecting === 'ball' || selecting === 'hoop') ? "" : "hidden"}`} onClick={handleClick}></canvas>
+                        </div>
+                        <div className="flex flex-row items-center justify-between">
+                            <Button variant="outline" onClick={() => { setSelecting('ball') }}>Select ball position</Button>
+                            <div className="flex flex-row gap-4">
+                                <p>X: {ballPosition.x}</p>
+                                <p>Y: {ballPosition.y}</p>
                             </div>
                         </div>
-                        <DialogFooter className="flex flex-row justify-end">
-                            <Button variant="outline">Reset</Button>
-                            <Button type="submit" aria-label="Submit" onClick={submitFile}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
-                                </svg>
-                                Upload Video
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
+                        <div className="flex flex-row items-center justify-between">
+                            <Button variant="outline" onClick={() => { setSelecting('hoop') }}>Select hoop position</Button>
+                            <div className="flex flex-row gap-4">
+                                <p>X: {hoopPosition.x}</p>
+                                <p>Y: {hoopPosition.y}</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-row items-center justify-between">
+                            <Button variant="outline" onClick={changeStartTime}>Set Start Time</Button>
+                            <div className="flex flex-row gap-4">
+                                <p>Time: {start_time}</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-row items-center justify-between">
+                            <Button variant="outline" onClick={changeEndTime}>Set End Time</Button>
+                            <div className="flex flex-row gap-4">
+                                <p>Time: {end_time}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter className="flex flex-row justify-end">
+                        <Button variant="outline" onClick={handleReset}>Reset</Button>
+                        <Button type="submit" aria-label="Submit" onClick={submitFile}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M5 20h14q.425 0 .713.288T20 21t-.288.713T19 22H5q-.425 0-.712-.288T4 21t.288-.712T5 20m5-2q-.425 0-.712-.288T9 17v-6H7.05q-.625 0-.9-.562t.1-1.063l4.95-6.35q.15-.2.363-.3t.437-.1t.438.1t.362.3l4.95 6.35q.375.5.1 1.063t-.9.562H15v6q0 .425-.288.713T14 18z" />
+                            </svg>
+                            Upload Video
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
             </Dialog>
 
         </>

@@ -16,7 +16,7 @@ export default async function VideoPage({
       <VideoBody videoMetadata={videoMetadata} />
       <div className="mt-[350px]">
         <div className="">
-          <h1>Optimal Angle</h1>
+          <h1 className="underline">Optimal Angle</h1>
           <p>{(Math.floor(videoMetadata.optimal_angle * 180 / 3.14))} degrees</p>
         </div>
       </div>
