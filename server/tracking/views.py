@@ -145,15 +145,21 @@ def delete(request, id):
 def all_info(request):
     shots = AnalyzedShot.objects.all()
     total_shots = len(shots)
-    shots_missed = 0 
+    shots_missed = 0
+    shots_overshot = 0
     for shot in shots:
         if not shot.made_in_basket:
-            shots_missed+=1
+            shots_missed += 1
+        if shot.is_overshot:
+            shots_overshot += 1
+    
+    avg_is_overshot = shots_overshot / total_shots > 0.5
 
     shots_made = len(shots) - shots_missed
     shot_statistics = {
         "shots_made": shots_made,
         "shots_missed": shots_missed,
         "total_shots": total_shots,
+        "avg_is_overshot": avg_is_overshot
     }
     return JsonResponse(shot_statistics, safe=False)
